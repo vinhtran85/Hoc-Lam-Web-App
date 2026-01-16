@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PWA Offline Demo</title>
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- iOS/Edge/Chrome meta (tùy chọn) -->
+  <meta name="theme-color" content="#0d6efd" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>PWA Offline Demo</h1>
+    <p>Ứng dụng có thể chạy offline nếu service worker được đăng ký.</p>
+  </header>
+
+  <main>
+    <button id="helloBtn">Bấm thử</button>
+    <p id="status"></p>
+  </main>
+
+  <script src="app.js"></script>
+
+  <script>
+    // Đăng ký service worker (chỉ hoạt động khi chạy qua http/https)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('./service-worker.js')
+          .then(reg => {
+            console.log('Service worker registered:', reg.scope);
+            const el = document.getElementById('status');
+            el.textContent = 'Service worker đã đăng ký (nếu đang chạy qua http/https).';
+          })
+          .catch(err => {
+            console.error('Service worker registration failed:', err);
+            const el = document.getElementById('status');
+            el.textContent = 'Không thể đăng ký service worker (có thể do mở file trực tiếp).';
+          });
+      });
+    } else {
+      const el = document.getElementById('status');
+      el.textContent = 'Trình duyệt không hỗ trợ service worker.';
+    }
+  </script>
+</body>
+</html>
